@@ -183,6 +183,23 @@ def check_repo(root: Path = ROOT) -> list:
     return problems
 
 
+def copy_tracked(root: Path, dest_root: Path) -> None:
+    """Copy only git-tracked files into a temp copy, so untracked local
+    artifacts (caches, env dirs) cannot break the self-test."""
+    import subprocess
+    out = subprocess.run(["git", "-C", str(root), "ls-files", "-z"],
+                         check=True, capture_output=True).stdout
+    for rel in out.decode().split("\0"):
+        if not rel:
+            continue
+        src = root / rel
+        if not src.is_file():
+            continue
+        target = dest_root / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_bytes(src.read_bytes())
+
+
 def self_test() -> int:
     """check_repo must flag a seeded broken copy and pass on this repo."""
     failures = []
@@ -199,13 +216,7 @@ def self_test() -> int:
     for anchor, replacement in seeds.items():
         with tempfile.TemporaryDirectory() as tmp:
             tmp_root = Path(tmp)
-            for path in ROOT.rglob("*"):
-                if path.is_dir() or ".git" in path.parts or "__pycache__" in path.parts:
-                    continue
-                rel = path.relative_to(ROOT)
-                dest = tmp_root / rel
-                dest.parent.mkdir(parents=True, exist_ok=True)
-                dest.write_bytes(path.read_bytes())
+            copy_tracked(ROOT, tmp_root)
             seeded = tmp_root / "skills" / "delegate-to-local-agent" / "SKILL.md"
             content = seeded.read_text()
             if replacement:
@@ -221,13 +232,7 @@ def self_test() -> int:
     # c) version mismatch is detected
     with tempfile.TemporaryDirectory() as tmp:
         tmp_root = Path(tmp)
-        for path in ROOT.rglob("*"):
-            if path.is_dir() or ".git" in path.parts or "__pycache__" in path.parts:
-                continue
-            rel = path.relative_to(ROOT)
-            dest = tmp_root / rel
-            dest.parent.mkdir(parents=True, exist_ok=True)
-            dest.write_bytes(path.read_bytes())
+        copy_tracked(ROOT, tmp_root)
         plugin = tmp_root / ".claude-plugin" / "plugin.json"
         data = json.loads(plugin.read_text())
         data["version"] = "9.9.9"
