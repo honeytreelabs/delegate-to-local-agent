@@ -8,7 +8,7 @@ change fast.
 
 | `AGENT_HARNESS` | `AGENT_CMD` | Non-interactive invocation | `AGENT_INPUT` | `Project config` |
 |---|---|---|---|---|
-| `pi` | `pi` | `pi -p "<instruction>" < task.md` (stdin is merged into the prompt) | `stdin` | `.pi/` |
+| `pi` | `pi` | `pi --approve -p "<instruction>" < task.md` (stdin is merged into the prompt) | `stdin` | `.pi/` |
 | `omp` (oh-my-pi) | `omp` | Pi fork; assumed to match Pi's `-p` print mode | `stdin` | `.omp/`, `.pi/` (assumed, verify) |
 | `opencode` | `opencode` | `opencode run "<instruction + spec>"` (message as positional argument) | `arg` | `.opencode/`, `opencode.json`, `opencode.jsonc` |
 | `custom` | must be set | `AGENT_CMD`, `AGENT_ARGS` and `AGENT_INPUT` must all be set explicitly | must be set | `AGENT_PROJECT_CONFIG` |
@@ -18,6 +18,11 @@ confirm the non-interactive flag and input handling still match this table.
 If they don't match, stop and tell the user rather than guessing flags. A
 harness that silently falls back to its interactive TUI does no work and may
 hang.
+
+pi loads project-local files (`.pi/`) only from folders it trusts. A new
+worktree path is not trusted, so the `pi` profile passes `--approve`, which
+trusts the project files for this run only. The `omp` profile assumes the
+same flag; check `omp --help` before you rely on it.
 
 ## Safety assumptions
 

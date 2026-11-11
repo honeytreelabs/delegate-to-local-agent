@@ -59,6 +59,7 @@ relax this, and mention to the user that you did.
 | `AGENT_TIMEOUT` | `1800` | Hard timeout in seconds for one run |
 | `AGENT_MAX_ROUNDS` | `3` | Max delegate → review → feedback rounds before you take over |
 | `AGENT_PROJECT_CONFIG` | from profile | Space-separated project paths to copy into the worktree when git does not track them |
+| `AGENT_PRINT_FLAGS` | from profile: `--approve -p` (pi), `-p` (omp) | Non-interactive flags inserted between `AGENT_ARGS` and the instruction |
 
 The profile table, the exact non-interactive invocation per harness, and how to
 add a harness live in [`references/harness-profiles.md`](references/harness-profiles.md).
@@ -143,7 +144,7 @@ LOG="$TASK_DIR/agent-round1.log"
 cd "$WT"
 
 # AGENT_INPUT=stdin (pi, omp): spec on stdin, avoids shell-quoting issues
-timeout "${AGENT_TIMEOUT:-1800}" $AGENT_CMD $AGENT_ARGS -p "$INSTR" \
+timeout "${AGENT_TIMEOUT:-1800}" $AGENT_CMD $AGENT_ARGS $AGENT_PRINT_FLAGS "$INSTR" \
   < "$TASK_FILE" > "$LOG" 2>&1; echo "exit=$?"
 
 # AGENT_INPUT=arg (opencode): spec as a single argument
