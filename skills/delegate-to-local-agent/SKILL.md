@@ -243,9 +243,16 @@ did.
 
 Commit in the worktree with a message that names the harness and says the
 change was reviewed by the orchestrator. Then ask the user how to integrate
-(default: merge the branch):
+(default: merge the branch).
+
+Read the repository's commit rules first (AGENTS.md, CLAUDE.md,
+CONTRIBUTING.md, recent `git log`). They decide the message format,
+signing, and whether hooks must run through a tool such as `uv run`.
+Add the `Implemented by ...` line only when the rules allow tool
+names or AI credits in commit messages.
 
 ```bash
+# Adapt the message and flags to the repository rules.
 git -C "$WT" add -A && git -C "$WT" commit -m "<summary>" \
   -m "Implemented by ${AGENT_HARNESS:-pi} (local LLM), reviewed by orchestrator."
 git merge --no-ff agent/$SLUG    # or: git cherry-pick, or leave the branch for a PR
