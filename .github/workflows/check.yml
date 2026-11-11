@@ -4,9 +4,9 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v5
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
       - run: uv sync --frozen
       - run: uv run --no-sync evals/check_skill.py --self-test
       - run: uv run --no-sync evals/check_skill.py
-      - run: python3 -c "import json,glob; [json.load(open(f)) for f in glob.glob('**/*.json', recursive=True)]"
+      - run: uv run --no-sync python -c "import json,glob; [json.load(open(f)) for f in glob.glob('**/*.json', recursive=True) if '.git' not in f]"
