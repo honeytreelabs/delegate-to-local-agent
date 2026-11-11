@@ -266,6 +266,10 @@ git branch -d agent/$SLUG         # only after it has been merged
 rm -rf "$TASK_DIR"
 ```
 
+`git worktree remove` also deletes the ignored files you copied in step
+3, such as `.pi/`. If it refuses because of untracked files, check
+that only copied config or caches are left, then use `--force`.
+
 If the user wants to inspect the agent's logs first, keep `$TASK_DIR` and give
 them the path.
 
