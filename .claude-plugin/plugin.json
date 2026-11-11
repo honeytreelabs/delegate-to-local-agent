@@ -1,0 +1,19 @@
+{
+  "name": "delegate-to-local-agent",
+  "displayName": "Delegate to Local Agent",
+  "description": "Delegate a well-scoped implementation task to a local coding-agent harness (Pi, oh-my-pi, OpenCode, ...) on a local LLM in an isolated git worktree, then review, verify and integrate its diff.",
+  "version": "1.0.0",
+  "author": {
+    "name": "honeytreelabs"
+  },
+  "homepage": "https://github.com/honeytreelabs/delegate-to-local-agent",
+  "repository": "https://github.com/honeytreelabs/delegate-to-local-agent",
+  "license": "MIT",
+  "keywords": [
+    "delegation",
+    "local-llm",
+    "coding-agent",
+    "worktree",
+    "orchestration"
+  ]
+}

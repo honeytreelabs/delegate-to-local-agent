@@ -1,0 +1,16 @@
+{
+  "name": "delegate-to-local-agent",
+  "interface": {
+    "displayName": "Delegate to Local Agent"
+  },
+  "plugins": [
+    {
+      "name": "delegate-to-local-agent",
+      "source": {
+        "source": "local",
+        "path": "./"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

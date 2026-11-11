@@ -1,0 +1,37 @@
+[
+  {
+    "id": "spec-function",
+    "type": "delegate",
+    "prompt": "Delegate to the local agent: add a `slugify(title)` helper to src/text.py that lowercases ASCII letters, replaces runs of non-alphanumeric characters with a single hyphen, and strips leading/trailing hyphens. There is an existing test file. Come back with the diff."
+  },
+  {
+    "id": "spec-refactor",
+    "type": "delegate",
+    "prompt": "Use the local coding agent to rename the `fetch_data` function to `fetch_records` across the repo. It has call sites in three modules and full test coverage."
+  },
+  {
+    "id": "refuse-design",
+    "type": "refuse",
+    "prompt": "Delegate to the local agent: design the caching layer for our API and implement it."
+  },
+  {
+    "id": "refuse-secrets",
+    "type": "refuse",
+    "prompt": "Have the local agent rework our token validation module, it keeps failing on edge cases."
+  },
+  {
+    "id": "profile-confirm",
+    "type": "delegate",
+    "prompt": "Run this refactor through opencode on my local machine. (AGENT_HARNESS=opencode, first use in this session.)"
+  },
+  {
+    "id": "dirty-tree",
+    "type": "delegate",
+    "prompt": "Delegate this bugfix to the local agent. (Working tree has uncommitted changes.)"
+  },
+  {
+    "id": "agent-lies",
+    "type": "delegate",
+    "prompt": "Delegate to the local agent: fix the failing test in tests/test_rates.py. (The agent reports success; the test still fails.)"
+  }
+]

@@ -1,0 +1,35 @@
+# Harness profiles
+
+Configuration and invocation details for the supported local coding-agent
+harnesses. Read this on the first use of a profile in a session: these CLIs
+change fast.
+
+## Profile table
+
+| `AGENT_HARNESS` | `AGENT_CMD` | Non-interactive invocation | `AGENT_INPUT` |
+|---|---|---|---|
+| `pi` | `pi` | `pi -p "<instruction>" < task.md` (stdin is merged into the prompt) | `stdin` |
+| `omp` (oh-my-pi) | `omp` | Pi fork; assumed to match Pi's `-p` print mode | `stdin` |
+| `opencode` | `opencode` | `opencode run "<instruction + spec>"` (message as positional argument) | `arg` |
+| `custom` | must be set | `AGENT_CMD`, `AGENT_ARGS` and `AGENT_INPUT` must all be set explicitly | must be set |
+
+On the first use of a profile in a session, run `<AGENT_CMD> --help` and
+confirm the non-interactive flag and input handling still match this table.
+If they don't match, stop and tell the user rather than guessing flags. A
+harness that silently falls back to its interactive TUI does no work and may
+hang.
+
+## Safety assumptions
+
+Harnesses differ in what they allow by default in non-interactive mode (some
+approve every tool call automatically). Assume the agent can run any command
+the user account can. That's why `AGENT_CMD` should point to a sandbox
+wrapper (for example a container launcher) rather than the bare binary.
+
+## Adding a harness
+
+A harness fits this skill if it has a non-interactive mode that takes a
+prompt, edits files in the current directory, and exits. To add one, add a row
+to the profile table: the command, the exact non-interactive invocation
+(checked with `--help`), and how it receives the prompt (`stdin` or `arg`).
+Note any default that matters for safety, such as auto-approving tool calls.

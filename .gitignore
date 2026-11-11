@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+
+# local harness configs for testing this skill against local models
+opencode.json
+.pi/
+.agent-circus/
+.agent-shell/
+.agent-worktrees/
