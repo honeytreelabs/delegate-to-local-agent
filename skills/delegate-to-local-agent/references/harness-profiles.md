@@ -6,12 +6,12 @@ change fast.
 
 ## Profile table
 
-| `AGENT_HARNESS` | `AGENT_CMD` | Non-interactive invocation | `AGENT_INPUT` |
-|---|---|---|---|
-| `pi` | `pi` | `pi -p "<instruction>" < task.md` (stdin is merged into the prompt) | `stdin` |
-| `omp` (oh-my-pi) | `omp` | Pi fork; assumed to match Pi's `-p` print mode | `stdin` |
-| `opencode` | `opencode` | `opencode run "<instruction + spec>"` (message as positional argument) | `arg` |
-| `custom` | must be set | `AGENT_CMD`, `AGENT_ARGS` and `AGENT_INPUT` must all be set explicitly | must be set |
+| `AGENT_HARNESS` | `AGENT_CMD` | Non-interactive invocation | `AGENT_INPUT` | `Project config` |
+|---|---|---|---|---|
+| `pi` | `pi` | `pi -p "<instruction>" < task.md` (stdin is merged into the prompt) | `stdin` | `.pi/` |
+| `omp` (oh-my-pi) | `omp` | Pi fork; assumed to match Pi's `-p` print mode | `stdin` | `.omp/`, `.pi/` (assumed, verify) |
+| `opencode` | `opencode` | `opencode run "<instruction + spec>"` (message as positional argument) | `arg` | `.opencode/`, `opencode.json`, `opencode.jsonc` |
+| `custom` | must be set | `AGENT_CMD`, `AGENT_ARGS` and `AGENT_INPUT` must all be set explicitly | must be set | `AGENT_PROJECT_CONFIG` |
 
 On the first use of a profile in a session, run `<AGENT_CMD> --help` and
 confirm the non-interactive flag and input handling still match this table.

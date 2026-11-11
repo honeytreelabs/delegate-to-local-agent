@@ -58,6 +58,7 @@ relax this, and mention to the user that you did.
 | `AGENT_INPUT` | from profile | How the task spec is passed: `stdin` or `arg` |
 | `AGENT_TIMEOUT` | `1800` | Hard timeout in seconds for one run |
 | `AGENT_MAX_ROUNDS` | `3` | Max delegate → review → feedback rounds before you take over |
+| `AGENT_PROJECT_CONFIG` | from profile | Space-separated project paths to copy into the worktree when git does not track them |
 
 The profile table, the exact non-interactive invocation per harness, and how to
 add a harness live in [`references/harness-profiles.md`](references/harness-profiles.md).
@@ -113,6 +114,24 @@ TASK_FILE=$TASK_DIR/task.md
 WT=$(git rev-parse --show-toplevel)/../.agent-worktrees/$SLUG
 git worktree add -b agent/$SLUG "$WT" HEAD
 ```
+
+Git copies only tracked files into the worktree. Copy the harness's
+project config when git ignores it, so the agent finds its models and
+settings:
+
+```bash
+ROOT=$(git rev-parse --show-toplevel)
+for p in $AGENT_PROJECT_CONFIG; do
+  [ -e "$ROOT/$p" ] || continue
+  git -C "$ROOT" ls-files --error-unmatch "$p" >/dev/null 2>&1 && continue
+  git -C "$ROOT" check-ignore -q "$p" || { echo "not ignored: $p"; continue; }
+  cp -a "$ROOT/$p" "$WT/$p"
+done
+```
+
+Copy only paths that git ignores. The copy can hold API keys, and an
+ignored path cannot end up in a commit. If a path exists but git
+does not ignore it, do not copy it; tell the user.
 
 ### 4. Run the agent
 
