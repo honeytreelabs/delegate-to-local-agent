@@ -2,6 +2,17 @@
 
 Each entry names the version and the change.
 
+## Unreleased
+
+- Added: `pyproject.toml` and `uv.lock`. The repo is now a virtual uv
+  project (no dependencies, no build). Run the checks with
+  `uv run evals/check_skill.py --self-test`, also where no system Python is
+  installed. CI runs `uv sync --frozen` and `uv run --no-sync`.
+- Fixed: `evals/check_skill.py` read the real repo's manifests during the
+  version-mismatch self-test, so the seeded failure was never detected.
+  Manifest paths are now resolved against the root under test, and the
+  `version` in `pyproject.toml` joined the consistency check.
+
 ## 1.0.0, 2026-11-11
 
 - Initial release. The skill packages the delegate → review → integrate

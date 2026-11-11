@@ -1,5 +1,6 @@
 __pycache__/
 *.pyc
+.venv/
 
 # local harness configs for testing this skill against local models
 opencode.json

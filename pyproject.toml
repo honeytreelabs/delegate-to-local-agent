@@ -1,0 +1,21 @@
+[project]
+name = "delegate-to-local-agent"
+version = "1.0.0"
+description = "Delegate a well-scoped implementation task to a local coding-agent harness (Pi, oh-my-pi, OpenCode, ...) on a local LLM in an isolated git worktree, then review, verify and integrate its diff."
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.11"
+authors = [
+    { name = "honeytreelabs" },
+]
+keywords = [
+    "delegation",
+    "local-llm",
+    "coding-agent",
+    "worktree",
+    "orchestration",
+]
+
+# The skill is a SKILL.md plus Markdown references; the only Python is the
+# dependency-free eval checker. No build system on purpose: uv treats this
+# as a virtual project and manages only the environment.

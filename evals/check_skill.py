@@ -14,6 +14,7 @@ import json
 import re
 import sys
 import tempfile
+import tomllib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -92,7 +93,7 @@ def parse_frontmatter(text: str) -> dict:
 
 
 def extract_versioned_values(root: Path) -> dict:
-    """Pull the version strings out of the plugin manifests, relative to root."""
+    """Pull the version strings out of the plugin manifests and pyproject."""
     versions = {}
     for name in VERSIONED_FILES:
         path = root / name
@@ -101,6 +102,9 @@ def extract_versioned_values(root: Path) -> dict:
             versions[name] = data["version"]
         else:  # marketplace.json nests the version in plugins[0]
             versions[name] = data["plugins"][0]["version"]
+    pyproject = root / "pyproject.toml"
+    if pyproject.exists():
+        versions["pyproject.toml"] = tomllib.loads(pyproject.read_text())["project"]["version"]
     return versions
 
 

@@ -82,7 +82,7 @@ Do it yourself instead when the task is mainly design or architecture, touches s
 
 ## Contributing
 
-Open an issue for questions and bug reports. Pull requests are welcome. Run `python3 evals/check_skill.py` before you push; CI runs it on every push. Say in the PR whether an agent wrote the code, and do not add attribution trailers.
+Open an issue for questions and bug reports. Pull requests are welcome. Run `uv run evals/check_skill.py` before you push; CI runs it on every push. Say in the PR whether an agent wrote the code, and do not add attribution trailers.
 
 ## License
 
