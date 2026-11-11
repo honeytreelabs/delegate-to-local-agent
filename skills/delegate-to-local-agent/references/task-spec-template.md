@@ -27,6 +27,11 @@ key signatures and snippets. Don't assume the agent will find them.>
 - `<test/build/lint command>` passes
 - <other acceptance criteria>
 
+## Known failures before your change
+<Tests that already fail in this worktree. Leave them as they are.
+Do not run git commands to check them; this list is the check.
+Delete this section if the baseline was clean.>
+
 ## Rules
 - Work only in the current directory. Do not commit, push, or touch git config.
 - Do not run git commands that change the repository: no `stash`, `reset`,

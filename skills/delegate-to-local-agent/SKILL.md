@@ -164,6 +164,18 @@ or API key (project config not copied, worktree not trusted), wrong
 flags, model server not reachable. Fix the setup or stop and tell the
 user. A setup error does not count as a round.
 
+Baseline: run the "Done when" commands once in the new worktree
+before the agent starts, and save the output:
+
+```bash
+(cd "$WT" && <done-when commands>) > "$TASK_DIR/baseline.log" 2>&1
+```
+
+Some tests fail only in a linked worktree or in this environment.
+List the failing tests in the task spec under a heading
+`## Known failures before your change`, and tell the agent not to fix
+or skip them. During review, compare the result with this baseline.
+
 ### 4. Run the agent
 
 Use the invocation shape for the resolved `AGENT_INPUT`:
