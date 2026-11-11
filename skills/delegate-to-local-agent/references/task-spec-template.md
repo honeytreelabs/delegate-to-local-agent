@@ -29,6 +29,9 @@ key signatures and snippets. Don't assume the agent will find them.>
 
 ## Rules
 - Work only in the current directory. Do not commit, push, or touch git config.
+- Do not run git commands that change the repository: no `stash`, `reset`,
+  `checkout`, `switch`, `restore`, `rebase`, `merge`, `clean` or `branch`.
+  Read-only commands such as `git status`, `git diff` and `git log` are fine.
 - No network access beyond what the build needs. Never print or write secrets.
 - Finish with a short summary: what you changed, what you're unsure about, anything left undone.
 ```

@@ -88,6 +88,7 @@ values override the profile), then:
 ```bash
 command -v "${AGENT_CMD%% *}" >/dev/null || echo "agent command not found"
 git rev-parse --show-toplevel && git status --porcelain
+STASH_COUNT=$(git stash list | wc -l)
 ```
 
 - Must be inside a git repo. If the working tree has uncommitted changes, ask
@@ -201,7 +202,10 @@ Do all of these, inside `$WT`:
    file outside the allowed scope, new dependencies, changed CI/build config,
    lockfile churn, or new executable/binary files. Also check for harness
    artifacts (session or config directories the agent may have created) and
-   keep them out of the commit.
+   keep them out of the commit. Compare `git stash list` and
+   `git branch --list 'agent/*'` with their state before the run. Any new
+   stash entry or branch means the agent broke the rules; mention it in the
+   report.
 2. **Read the full diff:** `git diff` (include untracked files:
    `git add -N . && git diff`). Check correctness against the requirements,
    edge cases, error handling, and the project's conventions.
