@@ -20,9 +20,9 @@ ROOT = Path(__file__).resolve().parent.parent
 SKILL_DIR = ROOT / "skills" / "delegate-to-local-agent"
 SKILL_MD = SKILL_DIR / "SKILL.md"
 VERSIONED_FILES = [
-    ROOT / ".claude-plugin" / "plugin.json",
-    ROOT / ".claude-plugin" / "marketplace.json",
-    ROOT / ".codex-plugin" / "plugin.json",
+    ".claude-plugin/plugin.json",
+    ".claude-plugin/marketplace.json",
+    ".codex-plugin/plugin.json",
 ]
 
 REQUIRED_INVARIANTS = [
@@ -91,15 +91,16 @@ def parse_frontmatter(text: str) -> dict:
     return fm
 
 
-def extract_versioned_values() -> dict:
-    """Pull the version strings out of the plugin manifests."""
+def extract_versioned_values(root: Path) -> dict:
+    """Pull the version strings out of the plugin manifests, relative to root."""
     versions = {}
-    for path in VERSIONED_FILES:
+    for name in VERSIONED_FILES:
+        path = root / name
         data = json.loads(path.read_text())
         if "version" in data:
-            versions[path.name] = data["version"]
+            versions[name] = data["version"]
         else:  # marketplace.json nests the version in plugins[0]
-            versions[path.name] = data["plugins"][0]["version"]
+            versions[name] = data["plugins"][0]["version"]
     return versions
 
 
@@ -163,7 +164,7 @@ def check_repo(root: Path = ROOT) -> list:
 
     # 5. Version consistency across manifests and CHANGELOG
     if re.fullmatch(r"\d+\.\d+\.\d+", version):
-        versions = extract_versioned_values()
+        versions = extract_versioned_values(root)
         for fname, v in versions.items():
             if v != version:
                 problems.append(f"{fname} version {v} != SKILL.md version {version}")
