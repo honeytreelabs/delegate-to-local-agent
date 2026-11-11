@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # Keep exact-pinned actions (checkout, setup-uv) fresh: Dependabot raises
+  # a PR whenever a newer tag exists. The uv.lock itself has no external
+  # dependencies, so there is nothing else to watch.
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    commit-message:
+      prefix: "ci"
+    labels:
+      - "dependencies"
