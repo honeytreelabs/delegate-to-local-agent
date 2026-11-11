@@ -3,6 +3,14 @@
 </p>
 
 <p align="center">
+  <a href="https://agentskills.io"><img src="https://img.shields.io/badge/SKILL.md-open_standard-blue?style=flat" alt="Agent Skills"></a>
+  <a href="skills/delegate-to-local-agent/SKILL.md"><img src="https://img.shields.io/badge/version-1.0.0-blue?style=flat" alt="version 1.0.0"></a>
+  <img src="https://img.shields.io/badge/runs_on-local_LLMs-green?style=flat" alt="runs on local LLMs">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgrey?style=flat" alt="MIT"></a>
+  <a href="https://github.com/honeytreelabs/delegate-to-local-agent/stargazers"><img src="https://img.shields.io/github/stars/honeytreelabs/delegate-to-local-agent?style=flat&logo=github&color=yellow" alt="GitHub stars"></a>
+</p>
+
+<p align="center">
   An agent skill that turns a coding agent into an orchestrator for a local coding-agent harness:<br>
   it decomposes the task, writes a concrete spec, runs the local agent in an isolated git worktree,<br>
   then reviews, verifies and integrates its diff. The local agent's output is treated as untrusted input.
