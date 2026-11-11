@@ -134,6 +134,25 @@ Copy only paths that git ignores. The copy can hold API keys, and an
 ignored path cannot end up in a commit. If a path exists but git
 does not ignore it, do not copy it; tell the user.
 
+Smoke test: check that the agent can reach its model from the
+worktree before you send the real task:
+
+```bash
+(cd "$WT" && timeout 300 $AGENT_CMD $AGENT_ARGS $AGENT_PRINT_FLAGS \
+  "Reply with the single word READY. Do not use any tools." \
+  < /dev/null > "$TASK_DIR/smoke.log" 2>&1); echo "exit=$?"
+grep -q READY "$TASK_DIR/smoke.log" && echo smoke-ok
+```
+
+For `AGENT_INPUT=arg`, the smoke command is
+`$AGENT_CMD run $AGENT_ARGS "<prompt>"`.
+
+If the exit code is not 0 or `READY` is missing, this is a setup
+error, not a task failure. Read `smoke.log`. Typical causes: no model
+or API key (project config not copied, worktree not trusted), wrong
+flags, model server not reachable. Fix the setup or stop and tell the
+user. A setup error does not count as a round.
+
 ### 4. Run the agent
 
 Use the invocation shape for the resolved `AGENT_INPUT`:
@@ -161,6 +180,8 @@ timeout "${AGENT_TIMEOUT:-1800}" $AGENT_CMD run $AGENT_ARGS \
 - Exit code 0 with **no changes** in the worktree usually means the invocation
   was wrong (wrong flag, TUI fallback, prompt not received). Check that before
   blaming the model.
+- Messages such as `No API key`, `model not found`, `connection refused` or
+  `unauthorized` mean a setup error. Handle them as in the smoke test.
 
 ### 5. Review (the important part)
 
