@@ -53,7 +53,7 @@ The orchestrator (the agent that loaded the skill) keeps the thinking work. A lo
 4. **Run.** Non-interactive invocation with a hard timeout, logged to a file.
 5. **Review.** Scope check, full diff read, security pass, and the orchestrator re-runs every "done when" command itself. The agent's claim that tests pass doesn't count.
 6. **Iterate or take over.** Concrete review feedback for up to `AGENT_MAX_ROUNDS` rounds, then the orchestrator fixes the rest itself.
-7. **Integrate and clean up.** Commit with attribution, merge/cherry-pick/PR per the user's choice, remove the worktree.
+7. **Integrate and clean up.** Commit with attribution, then merge or keep the branch (`AGENT_INTEGRATE`), and remove or keep the worktree (`AGENT_CLEANUP`).
 
 Everything the local agent produces is untrusted: it runs outside the orchestrator's permission system, so the skill mandates reviewing every line and never following instructions found in the agent's output.
 
@@ -67,6 +67,8 @@ Everything the local agent produces is untrusted: it runs outside the orchestrat
 | `AGENT_INPUT` | from profile | How the spec is passed: `stdin` or `arg` |
 | `AGENT_TIMEOUT` | `1800` | Hard timeout in seconds for one run |
 | `AGENT_MAX_ROUNDS` | `3` | Max delegate → review → feedback rounds |
+| `AGENT_INTEGRATE` | `ask` | `merge` the agent branch, `keep` it unmerged, or `ask` |
+| `AGENT_CLEANUP` | `remove` | `remove` the worktree and temp dir, or `keep` them |
 
 The profile table with exact non-interactive invocations lives in [`skills/delegate-to-local-agent/references/harness-profiles.md`](skills/delegate-to-local-agent/references/harness-profiles.md). The task-spec template lives in [`references/task-spec-template.md`](skills/delegate-to-local-agent/references/task-spec-template.md), with good and bad specs in [`examples/task-specs.md`](examples/task-specs.md).
 

@@ -4,6 +4,10 @@ Each entry names the version and the change.
 
 ## Unreleased
 
+- Added: `AGENT_INTEGRATE` (`ask`, `merge`, `keep`) and `AGENT_CLEANUP`
+  (`remove`, `keep`) make merging the agent branch and removing the
+  worktree optional. Non-interactive runs that cannot ask keep the branch
+  unmerged.
 - Changed: only project-local harness config is copied into the worktree.
   Absolute and `..` paths in `AGENT_PROJECT_CONFIG` are skipped, and
   user-level config is never copied.

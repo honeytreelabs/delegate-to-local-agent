@@ -61,6 +61,8 @@ relax this, and mention to the user that you did.
 | `AGENT_PROJECT_CONFIG` | from profile | Space-separated repo-relative paths of project-local harness config to copy into the worktree when git ignores them |
 | `AGENT_PRINT_FLAGS` | from profile: `--approve -p` (pi), `-p` (omp) | Non-interactive flags inserted between `AGENT_ARGS` and the instruction |
 | `AGENT_WORKTREE_DIR` | `<repo>/../.agent-worktrees` | Parent folder for agent worktrees |
+| `AGENT_INTEGRATE` | `ask` | After the commit: `merge` the agent branch, `keep` it unmerged (for a PR or later review), or `ask` the user |
+| `AGENT_CLEANUP` | `remove` | `remove` the worktree and temp dir after integration, or `keep` them for inspection |
 
 The profile table, the exact non-interactive invocation per harness, and how to
 add a harness live in [`references/harness-profiles.md`](references/harness-profiles.md).
@@ -251,8 +253,15 @@ did.
 ### 7. Integrate
 
 Commit in the worktree with a message that names the harness and says the
-change was reviewed by the orchestrator. Then ask the user how to integrate
-(default: merge the branch).
+change was reviewed by the orchestrator. Then integrate according to
+`AGENT_INTEGRATE`:
+
+- `merge`: merge `agent/$SLUG` into the branch you started from.
+- `keep`: do not merge. The commits stay on `agent/$SLUG` for a PR, a
+  cherry-pick, or the user's own review.
+- `ask` (default): ask the user (merge, cherry-pick, keep for a PR). If you
+  cannot ask (non-interactive run), use `keep`: it can be undone, a merge
+  cannot be undone as easily.
 
 Read the repository's commit rules first (AGENTS.md, CLAUDE.md,
 CONTRIBUTING.md, recent `git log`). They decide the message format,
@@ -264,20 +273,29 @@ names or AI credits in commit messages.
 # Adapt the message and flags to the repository rules.
 git -C "$WT" add -A && git -C "$WT" commit -m "<summary>" \
   -m "Implemented by ${AGENT_HARNESS:-pi} (local LLM), reviewed by orchestrator."
-git merge --no-ff agent/$SLUG    # or: git cherry-pick, or leave the branch for a PR
+# AGENT_INTEGRATE=merge only:
+git merge --no-ff agent/$SLUG    # or: git cherry-pick, as the user chose
 ```
 
 ### 8. Clean up
 
+With `AGENT_CLEANUP=keep`, skip this step. Leave the worktree, the
+branch and `$TASK_DIR` in place, and give the user their paths and the
+commands below to run later.
+
+With `AGENT_CLEANUP=remove` (default):
+
 ```bash
 git worktree remove "$WT"
-git branch -d agent/$SLUG         # only after it has been merged
+git branch -d agent/$SLUG         # only if it was merged; never with AGENT_INTEGRATE=keep
 rm -rf "$TASK_DIR"
 ```
 
-`git worktree remove` also deletes the ignored files you copied in step
-3, such as `.pi/`. If it refuses because of untracked files, check
-that only copied config or caches are left, then use `--force`.
+Removing the worktree does not remove its commits: an unmerged
+`agent/$SLUG` branch keeps them. `git worktree remove` also deletes the
+ignored files you copied in step 3, such as `.pi/`. If it refuses
+because of untracked files, check that only copied config or caches are
+left, then use `--force`.
 
 If the user wants to inspect the agent's logs first, keep `$TASK_DIR` and give
 them the path.
@@ -289,3 +307,4 @@ Keep it short:
 - what verification ran, and its result
 - issues you found in the agent's output and fixed yourself
 - where the change now lives (merged, branch name, or PR)
+- what was kept (worktree path, task dir) if cleanup was skipped
