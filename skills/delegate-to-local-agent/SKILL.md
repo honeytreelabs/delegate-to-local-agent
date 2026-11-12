@@ -58,7 +58,7 @@ relax this, and mention to the user that you did.
 | `AGENT_INPUT` | from profile | How the task spec is passed: `stdin` or `arg` |
 | `AGENT_TIMEOUT` | `1800` | Hard timeout in seconds for one run |
 | `AGENT_MAX_ROUNDS` | `3` | Max delegate → review → feedback rounds before you take over |
-| `AGENT_PROJECT_CONFIG` | from profile | Space-separated project paths to copy into the worktree when git does not track them |
+| `AGENT_PROJECT_CONFIG` | from profile | Space-separated repo-relative paths of project-local harness config to copy into the worktree when git ignores them |
 | `AGENT_PRINT_FLAGS` | from profile: `--approve -p` (pi), `-p` (omp) | Non-interactive flags inserted between `AGENT_ARGS` and the instruction |
 | `AGENT_WORKTREE_DIR` | `<repo>/../.agent-worktrees` | Parent folder for agent worktrees |
 
@@ -127,13 +127,16 @@ that command and set `WT` to the path it names. Sandboxes often mount
 only the repository, so a worktree outside it may not exist on the
 host.
 
-Git copies only tracked files into the worktree. Copy the harness's
-project config when git ignores it, so the agent finds its models and
-settings:
+Git copies only tracked files into the worktree. If the harness has
+**project-local** config in the repository that git ignores, copy it,
+so the agent finds its models and settings:
 
 ```bash
 ROOT=$(git rev-parse --show-toplevel)
 for p in $AGENT_PROJECT_CONFIG; do
+  case "$p" in
+    /*|~*|..|../*|*/..|*/../*) echo "not project-local, skipped: $p"; continue ;;
+  esac
   [ -e "$ROOT/$p" ] || continue
   git -C "$ROOT" ls-files --error-unmatch "$p" >/dev/null 2>&1 && continue
   git -C "$ROOT" check-ignore -q "$p" || { echo "not ignored: $p"; continue; }
@@ -141,9 +144,15 @@ for p in $AGENT_PROJECT_CONFIG; do
 done
 ```
 
-Copy only paths that git ignores. The copy can hold API keys, and an
-ignored path cannot end up in a commit. If a path exists but git
-does not ignore it, do not copy it; tell the user.
+Copy only project-local paths that git ignores. The copy can hold API
+keys, and an ignored path cannot end up in a commit. If a path exists
+but git does not ignore it, do not copy it; tell the user. If no
+project-local config exists, skip this step.
+
+Never copy user-level or global config (for example in the home
+directory) into the worktree. The harness reads it from any folder,
+including the worktree. If the smoke test fails, a missing global
+config is a setup error to report to the user, not a reason to copy it.
 
 Smoke test: check that the agent can reach its model from the
 worktree before you send the real task:

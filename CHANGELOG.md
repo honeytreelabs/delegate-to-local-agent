@@ -4,6 +4,10 @@ Each entry names the version and the change.
 
 ## Unreleased
 
+- Changed: only project-local harness config is copied into the worktree.
+  Absolute and `..` paths in `AGENT_PROJECT_CONFIG` are skipped, and
+  user-level config is never copied.
+
 - Added: `pyproject.toml` and `uv.lock`. The repo is now a virtual uv
   project (no dependencies, no build). Run the checks with
   `uv run evals/check_skill.py --self-test`, also where no system Python is
