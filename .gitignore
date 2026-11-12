@@ -8,3 +8,6 @@ opencode.json
 .agent-circus/
 .agent-shell/
 .agent-worktrees/
+
+.envrc
+.devenv/
